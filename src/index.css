@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bg-dark: #0f1115;
+    --bg-card: rgba(23, 27, 34, 0.8);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --text-white: #ffffff;
+    --text-grey: #94a3b8;
+    --accent-blue: #1D548B;
+    --accent-teal: #07A27D;
+    --primary-teal: #07A27D;
+    --primary-gradient: linear-gradient(90deg, #07A27D 0%, #1D548B 100%);
+    --input-bg: rgba(15, 17, 21, 0.6);
+}
+
+@layer base {
+    body {
+        @apply bg-bg-dark text-text-white font-sans antialiased;
+        margin: 0;
+    }
+}
+
+@layer components {
+    .glass-card {
+        @apply bg-bg-card backdrop-blur-md border border-border-color rounded-3xl p-8;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .premium-gradient-btn {
+        @apply bg-primary-gradient text-white px-6 py-2.5 rounded-full font-semibold uppercase text-[0.85rem] tracking-wider flex items-center gap-2 transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5;
+    }
+
+    .premium-gradient-btn:hover {
+        box-shadow: 0 4px 12px rgba(7, 162, 125, 0.3);
+    }
+
+    .input-field {
+        @apply flex flex-col gap-2;
+    }
+
+    .input-field label {
+        @apply text-text-grey text-sm font-medium;
+    }
+
+    input,
+    select,
+    textarea {
+        @apply bg-input-bg border border-border-color text-white rounded-xl px-4 py-3 text-[1rem] transition-all duration-200 focus:outline-none focus:border-primary-teal focus:ring-1 focus:ring-primary-teal/30;
+    }
+
+    .icon-input {
+        @apply relative flex items-center;
+    }
+
+    .input-icon {
+        @apply absolute left-4 text-text-grey;
+    }
+
+    .icon-input input,
+    .icon-input select {
+        @apply pl-12 w-full;
+    }
+}
