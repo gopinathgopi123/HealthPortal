@@ -154,10 +154,10 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
     };
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-3 items-start max-w-[1240px] mx-auto px-6 pb-10">
-            {/* Left Column: Image */}
-            <div className="md:block mb-8 md:mb-0">
-                <div className="w-full aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
+        <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-1 items-start max-w-[1240px] mx-auto px-6 pb-20">
+            {/* Left Column: Image (Tighter height on mobile) */}
+            <div className="md:block mb-4 md:mb-0">
+                <div className="w-full aspect-[2/1] md:aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
                     <img
                         src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=800"
                         alt="Medical form"
@@ -201,7 +201,7 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
                         <InputField
                             label="Contact Number"
                             field="patient_contact"
-                            placeholder="9876543210"
+                            placeholder="Enter the Contact"
                             value={formData.patient_contact}
                             error={errors.patient_contact}
                             onChange={(val) => handleChange('patient_contact', val)}
@@ -210,7 +210,7 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
                             label="Email"
                             field="patient_email"
                             type="email"
-                            placeholder="patient@example.com"
+                            placeholder="Enter the email"
                             value={formData.patient_email}
                             error={errors.patient_email}
                             onChange={(val) => handleChange('patient_email', val)}
