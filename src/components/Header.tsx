@@ -23,8 +23,11 @@ const Header: React.FC = () => {
             <Link href="/login" className="text-text-grey hover:text-text-white text-[0.9rem] font-semibold no-underline transition-colors">Login</Link>
             <Link href="/register" className="text-text-grey hover:text-text-white text-[0.9rem] font-semibold no-underline transition-colors">Register</Link>
           </div>
-          <button className="premium-gradient-btn" onClick={() => navigate('/book')}>
-            <Calendar size={18} />
+          <button
+            className="premium-gradient-btn px-3 py-2 text-[0.7rem] sm:px-4 sm:py-2 sm:text-[0.75rem] md:px-6 md:py-2.5 md:text-[0.85rem]"
+            onClick={() => navigate('/book')}
+          >
+            <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" />
             Book Appointment
           </button>
         </div>

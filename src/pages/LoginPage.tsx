@@ -29,6 +29,13 @@ const LoginPage: React.FC = () => {
       const result = await res.json();
 
       if (result.success && result.data && result.data.tokens) {
+
+        // Check if user is in 'customer' group
+        const userGroups = result.data.user.groups || [];
+        if (!userGroups.includes('customer')) {
+          throw new Error("Access denied. Only customers can access this portal.");
+        }
+
         setAuthData({
           user: result.data.user,
           token: result.data.tokens.access,

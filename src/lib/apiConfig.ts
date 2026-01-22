@@ -32,7 +32,8 @@ export function isLabsEndpoint(endpoint: string): boolean {
         endpoint.includes("/packageshome/") ||
         endpoint.includes("/mappings/") ||
         endpoint.includes("/availability/") ||
-        endpoint.includes("/orders/")
+        endpoint.includes("/orders/") ||
+        endpoint.includes("/vendors/")
     );
 }
 

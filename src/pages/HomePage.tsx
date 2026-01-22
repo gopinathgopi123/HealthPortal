@@ -17,10 +17,8 @@ const HomePage: React.FC = () => {
           Unlock the secrets of your biomarkers and optimize your wellness journey with our advanced health portal.
         </p>
         <div className="flex justify-center gap-5">
-          <button className="premium-gradient-btn">Get Started</button>
-          <button className="bg-transparent border border-border-color text-white px-8 py-3 rounded-full font-semibold hover:bg-white/5 transition-colors">
-            Learn More
-          </button>
+          <button className="premium-gradient-btn px-4 py-2 text-[0.75rem] md:px-6 md:py-2.5 md:text-[0.85rem]">Get Started</button>
+
         </div>
       </section>
 

@@ -3,6 +3,7 @@ import { checkAvailability } from '@/api/availability.api';
 import { useLocation } from "wouter";
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { contactFormSchema } from '@/schemas/validation';
 
 interface Slot {
   slot_id: string;
@@ -10,8 +11,28 @@ interface Slot {
   is_available: boolean;
 }
 
+interface ContactFormData {
+  customerId: string;
+  contact_number: string;
+  pincode: string;
+  email: string;
+  appointmentDate: string;
+  gender: string;
+}
+
+interface AvailabilityResponse {
+  vendors: Array<{
+    vendor_id: number;
+    slots: Slot[];
+  }>;
+}
+
 interface ContactFormProps {
-  onSlotsAvailable?: (slots: Slot[]) => void;
+  onSlotsAvailable?: (
+    slots: Slot[],
+    formData: ContactFormData,
+    availabilityResponse: AvailabilityResponse
+  ) => void;
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
@@ -24,6 +45,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
 
   const [formData, setFormData] = useState({
     customerId: '',
+    contact_number: '',
     pincode: '',
     email: '',
     appointmentDate: '',
@@ -37,19 +59,16 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
     e.preventDefault();
     setError(null);
 
-    // Validation
-    if (!formData.customerId) {
-      setError("Please select a customer.");
+
+
+    const validationResult = contactFormSchema.safeParse(formData);
+
+    if (!validationResult.success) {
+      const firstError = validationResult.error.issues[0];
+      setError(firstError.message);
       return;
     }
-    if (!formData.pincode || formData.pincode.length !== 6) {
-      setError("Please enter a valid 6-digit pincode.");
-      return;
-    }
-    if (!formData.appointmentDate) {
-      setError("Please select an appointment date.");
-      return;
-    }
+
     if (!testId) {
       setError("No test selected. Please return to home page.");
       return;
@@ -78,7 +97,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
         }
         // Slots are available, pass them to parent
         if (onSlotsAvailable) {
-          onSlotsAvailable(vendor.slots);
+          onSlotsAvailable(vendor.slots, formData, availabilityData);
         }
       } else {
         showToast("No vendors available for this test in your area.", "error");
@@ -100,7 +119,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-3 items-start max-w-[1240px] mx-auto px-6 pb-10">
       {/* Left Column: Image */}
-      <div className="hidden md:block">
+      <div className="md:block mb-8 md:mb-0">
         <div className="w-full aspect-[5/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
           <img
             src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800"
@@ -116,9 +135,12 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
 
         {/* Title and Subtitle */}
         <div >
-          <h2 className="text-2xl md:text-[2.25rem] font-extrabold leading-[1.1] mb-5 text-white tracking-tight">
+          <h2 className="text-3xl font-bold mb-2 text-black">
             Contact Information
           </h2>
+          <p className="text-gray-500 text-base mb-6">
+            We'll use this to keep you informed about your test and results
+          </p>
         </div>
 
         {/* Global Error Message */}
@@ -131,8 +153,34 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
         {/* Form */}
         <form className="flex flex-col gap-2" onSubmit={handleSubmit}>
 
+          {/* Phone Number */}
+          <div className="relative">
+            <input
+              type="tel"
+              id="phone"
+              placeholder=" "
+              className="peer bg-white w-full border border-slate-800 rounded-2xl text-black px-5 pt-6 pb-2 text-[1rem] outline-none"
+              value={formData.contact_number}
+              onChange={(e) => {
+                const val = e.target.value.replace(/\D/g, '').slice(0, 20);
+                setFormData({ ...formData, contact_number: val });
+              }}
+              maxLength={20}
+            />
+            <label
+              htmlFor="phone"
+              className="absolute left-5 top-4 text-slate-500 text-sm font-medium transition-all duration-300
+              peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-[1rem] peer-placeholder-shown:top-[0.8rem]
+              peer-focus:-translate-y-3 peer-focus:text-[0.8rem] peer-focus:top-4
+              peer-[:not(:placeholder-shown)]:-translate-y-3 peer-[:not(:placeholder-shown)]:text-[0.8rem] peer-[:not(:placeholder-shown)]:top-4 pointer-events-none"
+            >
+              Phone Number
+            </label>
+
+          </div>
+
           {/* Customer Dropdown */}
-          <div className="flex flex-col  ">
+          {/* <div className="flex flex-col  ">
             <label className="text-[0.7rem] font-bold text-slate-500 uppercase tracking-widest pl-1">
               Customer List
             </label>
@@ -156,72 +204,85 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
                 </svg>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Pincode */}
-          <div className="flex flex-col ">
-            <label className="text-[0.7rem] font-bold text-slate-500 uppercase tracking-widest pl-1">
-              Pincode
-            </label>
+          <div className="relative">
             <input
               type="text"
-              placeholder="6-digit pincode"
-              className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl text-white px-5 py-[0.4rem] text-[1rem] placeholder-slate-600 focus:border-blue-500/50 focus:bg-slate-900 transition-all duration-300 outline-none"
+              id="pincode"
+              placeholder=" "
+              className="peer bg-white w-full border border-slate-800 rounded-2xl text-black px-5 pt-6 pb-2 text-[1rem]     outline-none"
               value={formData.pincode}
               onChange={handlePincodeChange}
               maxLength={6}
             />
+            <label
+              htmlFor="pincode"
+              className="absolute left-5 top-4 text-slate-500 text-sm font-medium transition-all duration-300
+              peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-[1rem] peer-placeholder-shown:top-[0.8rem]
+              peer-focus:-translate-y-3 peer-focus:text-[0.8rem] peer-focus:top-4
+              peer-[:not(:placeholder-shown)]:-translate-y-3 peer-[:not(:placeholder-shown)]:text-[0.8rem] peer-[:not(:placeholder-shown)]:top-4 pointer-events-none"
+            >
+              Pincode
+            </label>
           </div>
 
           {/* Email */}
-          <div className="flex flex-col ">
-            <label className="text-[0.7rem] font-bold text-slate-500 uppercase tracking-widest pl-1">
-              Email
-            </label>
+          <div className="relative">
             <input
               type="email"
-              placeholder="Email address"
-              className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl text-white px-5 py-[0.4rem] text-[1rem] placeholder-slate-600 focus:border-blue-500/50 focus:bg-slate-900 transition-all duration-300 outline-none"
-              value={formData.email}
+              id="email"
+              placeholder=" "
+              className="peer bg-white w-full border border-slate-800 rounded-2xl text-black px-5 pt-6 pb-2 text-[1rem]     outline-none" value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
+            <label
+              htmlFor="email"
+              className="absolute left-5 top-4 text-slate-500 text-sm font-medium transition-all duration-300
+              peer-placeholder-shown:translate-y-0 peer-placeholder-shown:text-[1rem] peer-placeholder-shown:top-[0.8rem]
+              peer-focus:-translate-y-3 peer-focus:text-[0.8rem] peer-focus:top-4
+              peer-[:not(:placeholder-shown)]:-translate-y-3 peer-[:not(:placeholder-shown)]:text-[0.8rem] peer-[:not(:placeholder-shown)]:top-4 pointer-events-none"
+            >
+              Email
+            </label>
           </div>
 
           {/* Appointment Date */}
-          <div className="flex flex-col ">
-            <label className="text-[0.7rem] font-bold text-slate-500 uppercase tracking-widest pl-1">
-              Appointment Date
-            </label>
+          <div className="relative">
             <input
               type="date"
-              className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl text-white px-5 py-[0.4rem] text-[1rem] placeholder-slate-600 focus:border-blue-500/50 focus:bg-slate-900 transition-all duration-300 outline-none"
+              id="date"
+              className="peer bg-white w-full border border-slate-800 rounded-2xl text-black px-5 pt-6 pb-2 text-[1rem]     outline-none"
               value={formData.appointmentDate}
               onChange={(e) => setFormData({ ...formData, appointmentDate: e.target.value })}
               min={new Date().toISOString().split('T')[0]}
             />
+            <label
+              htmlFor="date"
+              className="absolute left-5 top-4 text-slate-500 text-sm font-medium transition-all duration-300 -translate-y-3 top-4 pointer-events-none"
+            >
+              Appointment Date
+            </label>
           </div>
 
           {/* Gender */}
-          <div className="flex flex-col  ">
-            <label className="text-[0.7rem] font-bold text-slate-500 uppercase tracking-widest pl-1">
+          <div className="relative group">
+            <select
+              id="gender"
+              value={formData.gender}
+              onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+              className="peer bg-white w-full border border-slate-800 rounded-2xl text-black px-5 pt-6 pb-2 text-[1rem]     outline-none"            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+            <label
+              htmlFor="gender"
+              className="absolute left-5 top-4 text-slate-500 text-sm font-medium transition-all duration-300 -translate-y-3 top-4 pointer-events-none"
+            >
               Gender
             </label>
-            <div className="relative group">
-              <select
-                value={formData.gender}
-                onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-                className="w-full bg-slate-950/50 border border-slate-800 rounded-2xl text-white px-5 py-[0.4rem] text-[1rem] appearance-none focus:border-blue-500/50 focus:bg-slate-900 transition-all duration-300 outline-none cursor-pointer"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 group-focus-within:text-blue-400 transition-colors">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
           </div>
 
           {/* Submit Button */}
@@ -229,7 +290,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
             <button
               type="submit"
               disabled={isChecking}
-              className="bg-primary-gradient hover:opacity-90 disabled:opacity-50 text-white py-[1.15rem] rounded-2xl font-extrabold text-[1.1rem] w-full shadow-lg shadow-accent-teal/20 transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.98] flex justify-center items-center gap-2"
+              className="bg-primary-gradient hover:opacity-90 disabled:opacity-50 text-white py-3 rounded-xl font-black text-sm w-[80%] mx-auto shadow-lg shadow-accent-teal/10 transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.98] flex justify-center items-center gap-2 uppercase tracking-widest"
             >
               {isChecking ? (
                 <>
@@ -248,8 +309,8 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
             </p>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
