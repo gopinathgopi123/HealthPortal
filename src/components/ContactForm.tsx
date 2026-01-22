@@ -117,10 +117,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-3 items-start max-w-[1240px] mx-auto px-6 pb-10">
-      {/* Left Column: Image */}
-      <div className="md:block mb-8 md:mb-0">
-        <div className="w-full aspect-[5/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
+    <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-1 items-start max-w-[1240px] mx-auto px-6 pb-20">
+      {/* Left Column: Image (Tighter height on mobile) */}
+      <div className="md:block mb-4 md:mb-0">
+        <div className="w-full aspect-[2/1] md:aspect-[5/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
           <img
             src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800"
             alt="User portrait"
