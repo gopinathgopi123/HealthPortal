@@ -3,6 +3,15 @@ import { User, Phone, MapPin } from 'lucide-react';
 import { Vendor } from '@/api/vendors.api';
 import { patientDetailsSchema } from '@/schemas/validation';
 import { SearchableDropdown, Option } from '@/components/ui/searchable-dropdown';
+import {
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Typography,
+    Box
+} from '@mui/material';
 
 export interface PatientFormData {
     patient_name: string;
@@ -109,6 +118,8 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
         vendor_id: initialData?.vendor_id || 0,
     });
 
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+
     // Auto-select first vendor when data loads
     // React.useEffect(() => {
     //     if (vendors.length > 0 && formData.vendor_id === 0) {
@@ -149,8 +160,13 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            onSubmit(formData);
+            setShowConfirmModal(true);
         }
+    };
+
+    const handleConfirmSubmit = () => {
+        setShowConfirmModal(false);
+        onSubmit(formData);
     };
 
     return (
@@ -327,6 +343,64 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
                     </div>
                 </form>
             </div >
+
+            {/* Confirmation Modal */}
+            <Dialog
+                open={showConfirmModal}
+                onClose={() => setShowConfirmModal(false)}
+                PaperProps={{
+                    style: {
+                        borderRadius: '20px',
+                        padding: '8px',
+                        backgroundColor: '#ffffff',
+                    },
+                }}
+            >
+                <DialogTitle>
+                    <Typography variant="h5" sx={{ fontWeight: 700, color: '#0f1115' }}>
+                        Confirm Booking
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Typography sx={{ color: '#64748b' }}>
+                        Are you sure you want to proceed with this booking?
+                    </Typography>
+                </DialogContent>
+                <DialogActions sx={{ padding: '16px 24px' }}>
+                    <Button
+                        onClick={() => setShowConfirmModal(false)}
+                        sx={{
+                            color: '#94a3b8',
+                            fontWeight: 700,
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                            '&:hover': {
+                                backgroundColor: 'transparent',
+                                color: '#07A27D',
+                            }
+                        }}
+                    >
+                        No
+                    </Button>
+                    <Button
+                        onClick={handleConfirmSubmit}
+                        variant="contained"
+                        sx={{
+                            background: 'linear-gradient(90deg, #07A27D 0%, #1D548B 100%)',
+                            borderRadius: '12px',
+                            padding: '8px 24px',
+                            fontWeight: 900,
+                            boxShadow: '0 4px 12px rgba(7, 162, 125, 0.2)',
+                            '&:hover': {
+                                background: 'linear-gradient(90deg, #07A27D 0%, #1D548B 100%)',
+                                opacity: 0.9,
+                            }
+                        }}
+                    >
+                        Yes, Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div >
     );
 };
