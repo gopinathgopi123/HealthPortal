@@ -177,6 +177,7 @@ const BookTest: React.FC = () => {
                         vendors={vendors || []}
                         isLoading={isRefreshingSlots}
                         onNext={handleSlotSelected}
+                        onBackToContact={() => setCurrentStep(1)}
                         selectedDate={bookingData.appointment_date || ''}
                         onDateChange={async (date: string) => {
                             if (!contactFormData || !testId) return;

@@ -131,7 +131,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSlotsAvailable }) => {
       </div>
 
       {/* Right Column: Form */}
-      <div className="flex flex-col  ">
+      <div className="flex flex-col mt-5  ">
 
         {/* Title and Subtitle */}
         <div >

@@ -24,6 +24,7 @@ interface SlotSelectionProps {
     isLoading?: boolean;
     onNext?: (selectedSlotId: string, vendorId: number) => void;
     onDateChange?: (date: string) => void;
+    onBackToContact?: () => void;
 }
 
 const SlotSelection: React.FC<SlotSelectionProps> = ({
@@ -32,7 +33,8 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
     selectedDate,
     isLoading = false,
     onNext,
-    onDateChange
+    onDateChange,
+    onBackToContact
 }) => {
     const [selectedSlot, setSelectedSlot] = useState<{ id: string; vendorId: number } | null>(null);
 
@@ -49,7 +51,7 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
     const dates = useMemo(() => {
         const result = [];
         const start = new Date();
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 10; i++) {
             const date = new Date(start);
             date.setDate(start.getDate() + i);
             result.push({
@@ -125,15 +127,15 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
                         </div>
                     )}
 
-                    <div className={`grid grid-cols-2 gap-x-3 gap-y-6 mb-8 mt-4 transition-opacity duration-300 ${isLoading ? 'opacity-30' : 'opacity-100'}`}>
+                    <div className={`grid grid-cols-2 gap-x-3 gap-y-6 mb-8 mt-4 transition-opacity duration-500 ${isLoading ? 'opacity-30' : 'opacity-100'}`}>
                         {allSlots.length > 0 ? (
                             allSlots.map((slot) => (
                                 <button
                                     key={`${slot.vendor_id}-${slot.slot_id}`}
                                     onClick={() => setSelectedSlot({ id: slot.slot_id, vendorId: slot.vendor_id })}
-                                    className={`relative px-3 py-3 rounded-xl border-2 transition-all duration-300 text-left group ${selectedSlot?.id === slot.slot_id
-                                        ? 'border-accent-teal bg-accent-teal/5 ring-1 ring-accent-teal'
-                                        : 'border-slate-100 bg-white hover:border-accent-teal/30'
+                                    className={`relative px-3 py-3 rounded-xl border-4 transition-all duration-300 text-left group ${selectedSlot?.id === slot.slot_id
+                                        ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
+                                        : 'border-slate-300 bg-white hover:border-blue-300'
                                         }`}
                                 >
                                     {/* Vendor Badge - Positioned on the border - more compact */}
@@ -142,7 +144,7 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
                                     </div>
 
                                     <div className="flex items-center justify-between">
-                                        <p className={`text-[0.7rem] sm:text-[0.75rem] font-bold whitespace-nowrap ${selectedSlot?.id === slot.slot_id ? 'text-accent-teal' : 'text-slate-900'}`}>
+                                        <p className={`text-[0.7rem] sm:text-[0.75rem] font-bold whitespace-nowrap ${selectedSlot?.id === slot.slot_id ? 'text-blue-600' : 'text-slate-900'}`}>
                                             {slot.slot_time}
                                         </p>
                                         {selectedSlot?.id === slot.slot_id && (
@@ -168,6 +170,14 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
                             className="bg-primary-gradient hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white py-3 rounded-xl font-black text-sm w-[80%] shadow-lg shadow-accent-teal/10 transition-all duration-300 transform hover:-translate-y-1 active:scale-[0.98] uppercase tracking-widest mt-2"
                         >
                             Continue to Address
+                        </button>
+                    </div>
+                    <div className="flex justify-center mt-4">
+                        <button
+                            onClick={onBackToContact}
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-600 py-2 px-6 rounded-lg font-medium text-sm border border-slate-300 transition-all duration-300"
+                        >
+                            ← Back to Contact Form
                         </button>
                     </div>
                 </div>

@@ -12,12 +12,52 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
   ];
 
   return (
-    <div className="max-w-12xl mx-auto px-4 mb-4 bg-black rounded-2xl p-3">
-      <div className="flex justify-center items-center py-2">
-        <div className="relative flex flex-col items-center w-full max-w-4xl px-8">
+    <div className="max-w-12xl mx-auto px-4 mb-4 rounded-2xl p-3">
+      {/* Mobile View */}
+      <div className="md:hidden">
+        <div className="flex flex-col items-center justify-center mb-3">
+          <span className="text-sm font-medium mb-2">Step {currentStep} of {steps.length}</span>
+          <div className="flex items-center gap-1">
+            {steps.map((step, index) => (
+              <React.Fragment key={step.number}>
+                <div
+                  className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 ${
+                    currentStep > step.number 
+                      ? 'bg-blue-500 border-blue-500' 
+                      : currentStep === step.number 
+                      ? 'bg-blue-500 border-blue-500' 
+                      : 'border-gray-300 bg-transparent'
+                  }`}
+                >
+                  {currentStep > step.number ? (
+                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : currentStep === step.number ? (
+                    <div className="w-1.5 h-1.5 bg-white rounded-full" />
+                  ) : (
+                    <div className="w-1 h-1 bg-gray-300 rounded-full" />
+                  )}
+                </div>
+                {index < steps.length - 1 && (
+                  <div 
+                    className={`w-4 h-0.5 transition-all duration-300 ${
+                      currentStep > step.number ? 'bg-blue-500' : 'bg-gray-300'
+                    }`}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Normal Screen View */}
+      <div className="hidden md:flex justify-center items-center py-2 bg-black  rounded-2xl  -m-3">
+        <div className="relative flex flex-col items-center w-full max-w-4xl px-8 p-3">
 
           {/* Animated Progress Line Container - aligned with step centers */}
-          <div className="absolute top-[1rem] left-12 right-12 h-[2px] bg-white/20">
+          <div className="absolute top-[1.7rem] left-14 right-14 h-[1px] bg-white/20">
             <div
               className="h-full bg-white transition-all duration-700 ease-in-out shadow-[0_0_10px_rgba(255,255,255,0.5)]"
               style={{
