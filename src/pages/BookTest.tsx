@@ -37,11 +37,13 @@ const BookTest: React.FC = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const testId = searchParams.get('id');
 
-    const { data: vendors } = useVendors();
+    const [currentStep, setCurrentStep] = useState(1);
+    const { data: vendors } = useVendors({ enabled: currentStep > 1 });
     const { data: tests } = useLabTests();
     const { showToast } = useToast();
 
-    const [currentStep, setCurrentStep] = useState(1);
+    // Find the specific test being booked
+    const selectedTest = tests?.find(t => String(t.id) === testId);
     const [availableSlots, setAvailableSlots] = useState<Slot[]>([]);
     const [availabilityData, setAvailabilityData] = useState<AvailabilityResponse | null>(null);
     const [contactFormData, setContactFormData] = useState<ContactFormData | null>(null);
@@ -161,8 +163,27 @@ const BookTest: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen  py-4">
-            <div className="max-w-[1600px] mx-auto">
+        <div className="min-h-screen  p-0">
+            {/* Mobile Header - Only visible on mobile */}
+            <div className="md:hidden bg-gradient-to-r from-[#07A27D] to-[#1D548B] px-6 py-8">
+                <h1 className="text-2xl font-bold text-white uppercase tracking-wide">
+                    {selectedTest?.name || "QUICK TEST- ESSENTIAL"}
+                </h1>
+                <p className="text-white/90 text-sm mt-2">
+                    {selectedTest?.description || "Basic assessment across all 11 pillars"}
+                </p>
+            </div>
+
+            <div className="max-w-[1240px] mx-auto">
+                {/* Desktop Header - Hidden on mobile */}
+                {/* <div className="mb-10 hidden md:block">
+                    <h1 className="text-3xl font-black text-[#0f1115] tracking-tight">
+                        Booking: <span className="bg-gradient-to-r from-[#07A27D] to-[#1D548B] bg-clip-text text-transparent">
+                            {selectedTest?.name || "Health Test"}
+                        </span>
+                    </h1>
+                    <p className="text-slate-500 font-bold mt-2">Complete these simple steps to schedule your diagnostics.</p>
+                </div> */}
                 <ProgressBar currentStep={currentStep} />
 
                 {currentStep === 1 && (

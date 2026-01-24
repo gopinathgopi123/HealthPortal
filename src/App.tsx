@@ -3,6 +3,7 @@ import Header from './components/Header';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPassword from './pages/ForgotPassword';
 import BookTest from './pages/BookTest';
 import { Route, Switch, useLocation } from "wouter";
 import { setGlobalNavigate } from "./lib/queryClient";
@@ -18,21 +19,22 @@ function App() {
 
     return (
         <ToastProvider>
-            <div className="min-h-screen flex flex-col">
-                <Header />
-
-                <main className="container mx-auto px-6 flex-grow pb-[60px]">
-                    <Switch>
-                        <Route path="/" component={HomePage} />
-                        <Route path="/login" component={LoginPage} />
-                        <Route path="/register" component={RegisterPage} />
-                        <Route path="/book" component={BookTest} />
-                        {/* Default Route */}
-                        <Route>
-                            <HomePage />
-                        </Route>
-                    </Switch>
-                </main>
+            <div className="min-h-screen">
+                <div className="flex flex-col min-h-screen">
+                    <Header />
+                    <main className="flex-grow container mx-auto  ">
+                        <Switch>
+                            <Route path="/" component={HomePage} />
+                            <Route path="/login" component={LoginPage} />
+                            <Route path="/register" component={RegisterPage} />
+                            <Route path="/forgot-password" component={ForgotPassword} />
+                            <Route path="/book" component={BookTest} />
+                            <Route>
+                                <HomePage />
+                            </Route>
+                        </Switch>
+                    </main>
+                </div>
             </div>
         </ToastProvider>
     );

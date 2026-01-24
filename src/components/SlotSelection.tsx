@@ -51,7 +51,7 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
     const dates = useMemo(() => {
         const result = [];
         const start = new Date();
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 8; i++) {
             const date = new Date(start);
             date.setDate(start.getDate() + i);
             result.push({
@@ -74,7 +74,7 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-1 items-start max-w-[1240px] mx-auto px-6 pb-20">
             {/* Left Column: Image (Tighter height on mobile) */}
             <div className="md:block mb-4 md:mb-0">
-                <div className="w-full aspect-[2/1] md:aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
+                <div className="w-full aspect-[2/1] md:aspect-[4/5] rounded-[1.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
                     <img
                         src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
                         alt="Medical appointment"
@@ -104,7 +104,7 @@ const SlotSelection: React.FC<SlotSelectionProps> = ({
                         <button
                             key={d.full}
                             onClick={() => onDateChange?.(d.full)}
-                            className={`flex flex-col items-center min-w-[50px] py-3 rounded-2xl transition-all duration-300 ${selectedDate === d.full
+                            className={`flex flex-col items-center min-w-[50px] py-1 rounded-2xl transition-all duration-300 ${selectedDate === d.full
                                 ? 'bg-primary-gradient text-white shadow-lg shadow-accent-teal/30 scale-105'
                                 : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
                                 }`}

@@ -82,40 +82,40 @@ async function refreshAuthToken(
 }
 
 
+// Try to get auth data from cookies
+const getStoredAuth = (): AuthData | null => {
+    try {
+        const token = getCookie("auth_token");
+        const refreshToken = getCookie("refresh_token");
+        const storedUser = getCookie("auth_user");
+
+        if (token && storedUser) {
+            return {
+                user: JSON.parse(storedUser),
+                token,
+                refreshToken: refreshToken || "",
+            };
+        }
+        return null;
+    } catch {
+        return null;
+    }
+};
+
 export function useAuth() {
     const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const [, setLocation] = useLocation();
 
-    // Try to get auth data from cookies
-    const getStoredAuth = (): AuthData | null => {
-        try {
-            const token = getCookie("auth_token");
-            const refreshToken = getCookie("refresh_token");
-            const storedUser = getCookie("auth_user");
-
-            if (token && storedUser) {
-                return {
-                    user: JSON.parse(storedUser),
-                    token,
-                    refreshToken: refreshToken || "",
-                };
-            }
-            return null;
-        } catch {
-            return null;
-        }
-    };
-
     const { data: authData, isLoading } = useQuery<AuthData | null>({
         queryKey: ["/auth/user"],
         queryFn: async () => {
-            // First check sessionStorage
             const stored = getStoredAuth();
             if (stored && stored.token) {
                 return stored;
             }
             return null;
         },
+        initialData: getStoredAuth,
         retry: false,
         staleTime: Infinity, // Don't refetch automatically
     });
@@ -187,12 +187,7 @@ export function useAuth() {
         mutationFn: async () => {
             const refreshToken = getCookie("refresh_token");
 
-            // Clear cookies and sessionStorage
-            removeCookie("auth_token");
-            removeCookie("refresh_token");
-            removeCookie("auth_user");
-
-            // Call logout endpoint
+            // 1. Call logout endpoint first (optional, but good practice)
             try {
                 if (refreshToken) {
                     await apiRequest("POST", "/logout/", {
@@ -201,13 +196,14 @@ export function useAuth() {
                 }
             } catch (error) {
                 console.error("Logout API error:", error);
+            } finally {
+                // 2. ABSOLUTELY CLEAR EVERYTHING regardless of API success
+                clearAuthData();
+                queryClient.clear();
+
+                // 3. Force full browser refresh to clear all JS memory state
+                window.location.href = "/login";
             }
-        },
-        onSuccess: () => {
-            // Clear all queries
-            queryClient.clear();
-            // Redirect to login
-            setTimeout(() => setLocation("/login"), 100);
         },
     });
 
