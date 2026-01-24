@@ -24,7 +24,7 @@ export type AppointmentType = z.infer<typeof AppointmentTypeSchema>;
 export type AppointmentTypesResponse = z.infer<typeof AppointmentTypesResponseSchema>;
 
 export const ContactFormSchema = z.object({
-    phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
+
     email: z.string().email("Invalid email address"),
     fullName: z.string().min(2, "Full name is required"),
     gender: z.enum(["Male", "Female", "Other"]),

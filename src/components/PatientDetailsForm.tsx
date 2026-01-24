@@ -3,6 +3,7 @@ import { User, Phone, MapPin } from 'lucide-react';
 import { Vendor } from '@/api/vendors.api';
 import { patientDetailsSchema } from '@/schemas/validation';
 import { SearchableDropdown, Option } from '@/components/ui/searchable-dropdown';
+import FormInput from '@/components/ui/form-input';
 import {
     Dialog,
     DialogTitle,
@@ -42,39 +43,6 @@ interface PatientDetailsFormProps {
     isSubmitting?: boolean;
 }
 
-const InputField = ({
-    label,
-    field,
-    type = 'text',
-    placeholder,
-    required = true,
-    value,
-    error,
-    onChange
-}: {
-    label: string;
-    field: string;
-    type?: string;
-    placeholder?: string;
-    required?: boolean;
-    value: string | number;
-    error?: string;
-    onChange: (value: string | number) => void;
-}) => (
-    <div className="flex flex-col">
-        <label className="text-sm font-medium text-slate-500 pl-1">
-            {label} {required && <span className="text-red-400">*</span>}
-        </label>
-        <input
-            type={type}
-            placeholder={placeholder}
-            className={`w-full bg-white border ${error ? 'border-red-400' : 'border-slate-800'} rounded-2xl text-black px-5 py-[0.4rem] text-[1rem] placeholder-slate-600 focus:border-accent-teal focus:bg-white transition-all duration-300 outline-none`}
-            value={value}
-            onChange={(e) => onChange(type === 'number' ? parseFloat(e.target.value) : e.target.value)}
-        />
-        {error && <span className="text-red-400 text-xs mt-1 pl-1">{error}</span>}
-    </div>
-);
 
 const Section = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
     <div className="mb-6">
@@ -173,7 +141,7 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-[1.1fr,1fr] gap-x-20 mt-1 items-start max-w-[1240px] mx-auto px-6 pb-20">
             {/* Left Column: Image (Tighter height on mobile) */}
             <div className="md:block mb-4 md:mb-0">
-                <div className="w-full aspect-[2/1] md:aspect-[4/5] rounded-[2.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
+                <div className="w-full aspect-[2/1] md:aspect-[4/5] rounded-[1.5rem] overflow-hidden bg-slate-800 shadow-2xl relative">
                     <img
                         src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=800"
                         alt="Medical form"
@@ -197,113 +165,101 @@ const PatientDetailsForm: React.FC<PatientDetailsFormProps> = ({
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Patient Information */}
                     <Section title="Patient Information" icon={User}>
-                        <InputField
+                        <FormInput
                             label="Full Name"
-                            field="patient_name"
                             placeholder="John Doe"
                             value={formData.patient_name}
                             error={errors.patient_name}
-                            onChange={(val) => handleChange('patient_name', val)}
+                            onChange={(e) => handleChange('patient_name', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="Age"
-                            field="patient_age"
                             type="number"
                             placeholder="25"
                             value={formData.patient_age}
                             error={errors.patient_age}
-                            onChange={(val) => handleChange('patient_age', val)}
+                            onChange={(e) => handleChange('patient_age', parseFloat(e.target.value))}
                         />
-                        <InputField
+                        <FormInput
                             label="Contact Number"
-                            field="patient_contact"
                             placeholder="Enter the Contact"
                             value={formData.patient_contact}
                             error={errors.patient_contact}
-                            onChange={(val) => handleChange('patient_contact', val)}
+                            onChange={(e) => handleChange('patient_contact', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="Email"
-                            field="patient_email"
                             type="email"
                             placeholder="Enter the email"
                             value={formData.patient_email}
                             error={errors.patient_email}
-                            onChange={(val) => handleChange('patient_email', val)}
+                            onChange={(e) => handleChange('patient_email', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="Height (cm)"
-                            field="patient_height"
                             type="number"
                             placeholder="170"
                             value={formData.patient_height}
                             error={errors.patient_height}
-                            onChange={(val) => handleChange('patient_height', val)}
+                            onChange={(e) => handleChange('patient_height', parseFloat(e.target.value))}
                         />
-                        <InputField
+                        <FormInput
                             label="Weight (kg)"
-                            field="patient_weight"
                             type="number"
                             placeholder="70"
                             value={formData.patient_weight}
                             error={errors.patient_weight}
-                            onChange={(val) => handleChange('patient_weight', val)}
+                            onChange={(e) => handleChange('patient_weight', parseFloat(e.target.value))}
                         />
                     </Section>
 
                     {/* Address Information */}
                     <Section title="Address Information" icon={MapPin}>
-                        <InputField
+                        <FormInput
                             label="Street"
-                            field="street"
                             placeholder="Main Street"
                             required={false}
                             value={formData.street}
                             error={errors.street}
-                            onChange={(val) => handleChange('street', val)}
+                            onChange={(e) => handleChange('street', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="Address Line 1"
-                            field="address_line1"
                             placeholder="Near City Center"
                             required={false}
                             value={formData.address_line1}
                             error={errors.address_line1}
-                            onChange={(val) => handleChange('address_line1', val)}
+                            onChange={(e) => handleChange('address_line1', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="Address Line 2"
-                            field="address_line2"
                             placeholder="Opposite Park"
                             required={false}
                             value={formData.address_line2}
                             error={errors.address_line2}
-                            onChange={(val) => handleChange('address_line2', val)}
+                            onChange={(e) => handleChange('address_line2', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="Landmark"
-                            field="landmark"
                             placeholder="City Mall"
                             required={false}
                             value={formData.landmark}
                             error={errors.landmark}
-                            onChange={(val) => handleChange('landmark', val)}
+                            onChange={(e) => handleChange('landmark', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="City"
-                            field="city"
                             placeholder="Chennai"
                             value={formData.city}
                             error={errors.city}
-                            onChange={(val) => handleChange('city', val)}
+                            onChange={(e) => handleChange('city', e.target.value)}
                         />
-                        <InputField
+                        <FormInput
                             label="State"
-                            field="state"
                             placeholder="Tamil Nadu"
                             value={formData.state}
                             error={errors.state}
-                            onChange={(val) => handleChange('state', val)}
+                            onChange={(e) => handleChange('state', e.target.value)}
                         />
                     </Section>
 
